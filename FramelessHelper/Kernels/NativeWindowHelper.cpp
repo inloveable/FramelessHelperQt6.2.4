@@ -1,13 +1,13 @@
-#include "NativeWindowHelper.h"
+﻿#include "NativeWindowHelper.h"
 #include "NativeWindowHelper_p.h"
 
 #include <windows.h>
 #include <windowsx.h>
 #include <winuser.h>
-
+#include<dwmapi.h>
 #include <QScreen>
 #include <QEvent>
-#include <QtWin>
+#include <windows.h>
 
 #include <QOperatingSystemVersion>
 
@@ -20,7 +20,13 @@
 #endif
 
 // class NativeWindowHelper
-
+bool misCompositionEnabled()
+{
+    //QWinEventFilter::setup();
+    BOOL enabled=false;
+    DwmIsCompositionEnabled(&enabled);
+    return enabled;
+}
 NativeWindowHelper::NativeWindowHelper(QWindow *window, NativeWindowTester *tester)
     : QObject(window)
     , d_ptr(new NativeWindowHelperPrivate())
@@ -70,7 +76,7 @@ NativeWindowHelper::~NativeWindowHelper()
 {
 }
 
-bool NativeWindowHelper::nativeEventFilter(void *msg, long *result)
+bool NativeWindowHelper::nativeEventFilter(void *msg, qintptr *result)
 {
     Q_D(NativeWindowHelper);
 
@@ -85,7 +91,8 @@ bool NativeWindowHelper::nativeEventFilter(void *msg, long *result)
                              GET_Y_LPARAM(lParam));
         return true;
     } else if (WM_NCACTIVATE == lpMsg->message) {
-        if (!QtWin::isCompositionEnabled()) {
+
+        if (!misCompositionEnabled()) {
             if (result) *result = 1;
             return true;
         }
@@ -220,7 +227,7 @@ void NativeWindowHelperPrivate::updateWindowStyle()
             | WS_CAPTION | WS_SYSMENU | WS_MAXIMIZEBOX | WS_MINIMIZEBOX;;
     LONG newStyle = WS_POPUP            | WS_THICKFRAME;
 
-    if (QtWin::isCompositionEnabled())
+    if (misCompositionEnabled())
         newStyle |= WS_CAPTION;
 
     if (window->flags() & Qt::CustomizeWindowHint) {
@@ -241,8 +248,11 @@ void NativeWindowHelperPrivate::updateWindowStyle()
                  SWP_NOOWNERZORDER | SWP_NOZORDER |
                  SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE);
 
-    if (QtWin::isCompositionEnabled())
-        QtWin::extendFrameIntoClientArea(window, 1, 1, 1, 1);
+    if (misCompositionEnabled())
+        //QtWin::extendFrameIntoClientArea(window, 1, 1, 1, 1);
+    {
+
+    }
 }
 
 int NativeWindowHelperPrivate::hitTest(int x, int y) const

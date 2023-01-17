@@ -1,4 +1,4 @@
-#ifndef NATIVEWINDOWHELPER_H
+﻿#ifndef NATIVEWINDOWHELPER_H
 #define NATIVEWINDOWHELPER_H
 
 #include <QPoint>
@@ -26,7 +26,7 @@ public:
     ~NativeWindowHelper();
 
 public:
-    bool nativeEventFilter(void *msg, long *result);
+    bool nativeEventFilter(void *msg, qintptr *result);
 protected:
     bool eventFilter(QObject *obj, QEvent *ev) final;
 protected:
@@ -36,6 +36,9 @@ signals:
     void scaleFactorChanged(qreal factor);
 public:
     qreal scaleFactor() const;
+
+private:
+
 };
 
 #endif // NATIVEWINDOWHELPER_H

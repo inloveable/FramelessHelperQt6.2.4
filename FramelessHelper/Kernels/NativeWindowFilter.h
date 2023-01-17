@@ -1,4 +1,4 @@
-#ifndef NATIVEWINDOWFILTER_H
+﻿#ifndef NATIVEWINDOWFILTER_H
 #define NATIVEWINDOWFILTER_H
 
 #include <QAbstractNativeEventFilter>
@@ -12,7 +12,7 @@ public:
     static void deliver(QWindow *window, NativeWindowHelper *helper);
 protected:
     bool nativeEventFilter(const QByteArray &eventType,
-                           void *message, long *result) final;
+                           void *message, qintptr *result) final;
 };
 
 #endif // NATIVEWINDOWFILTER_H

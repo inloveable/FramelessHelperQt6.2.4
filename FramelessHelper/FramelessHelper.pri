@@ -1,7 +1,8 @@
-QT += winextras
+#QT += winextras
 
 INCLUDEPATH += $$PWD
 LIBS += -lUser32
+
 
 HEADERS += \
     $$PWD/FramelessHelper.h \
